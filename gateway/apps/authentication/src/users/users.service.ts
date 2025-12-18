@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
 import { CreateUserDto, LoginDto, UserResponseDto } from '@app/common/dtos/user.dto';
 import { UsersRepository } from './users.repository';
 import { JwtService } from '@nestjs/jwt';
@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
+  private readonly logger = new Logger(UsersService.name);
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
     private jwtService: JwtService,  // Inject JWT
@@ -40,6 +41,7 @@ export class UsersService {
   }
 
   async login(loginDto: LoginDto): Promise<{ accessToken: string }> {
+    this.logger.log(`Login attempt for email: ${loginDto.email}`);
     const { email, password } = loginDto;
 
     const user = await this.userModel.findOne({ email });
@@ -53,8 +55,13 @@ export class UsersService {
     }
 
     const payload = { sub: user._id, email: user.email };
+    this.logger.verbose('Password comparison successful');
+    this.logger.log('JWT token generated successfully');
     return {
       accessToken: await this.jwtService.signAsync(payload),
     };
+    
   }
+  
+
 }

@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from './users/users.module';
 import { configModuleOptions } from '@app/config/index';
+import { LoggingModule } from '@app/common/logging/logging.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { configModuleOptions } from '@app/config/index';
       inject: [ConfigService],
     }),
     UsersModule,
+    LoggingModule
   ],
 })
 export class AppModule {}
