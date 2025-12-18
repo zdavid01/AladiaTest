@@ -3,6 +3,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
+  console.log('Loaded JWT_SECRET:', process.env.JWT_SECRET);
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
     transport: Transport.TCP,
     options: {

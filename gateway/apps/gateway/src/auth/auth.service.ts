@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { CreateUserDto, UserResponseDto } from '@app/common/dtos/user.dto';
+import { CreateUserDto, LoginDto, UserResponseDto } from '@app/common/dtos/user.dto';
 
 @Injectable()
 export class AuthService {
@@ -12,5 +12,9 @@ export class AuthService {
 
   async getUsers(): Promise<UserResponseDto[]> {
     return this.client.send('get_users', {}).toPromise();
+  }
+
+  async login(loginDto: LoginDto): Promise<{ accessToken: string }> {
+    return this.client.send('login_user', loginDto).toPromise();
   }
 }

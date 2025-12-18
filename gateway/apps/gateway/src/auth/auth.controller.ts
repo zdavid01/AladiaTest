@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto, UserResponseDto } from '@app/common/dtos/user.dto';
+import { CreateUserDto, LoginDto, UserResponseDto } from '@app/common/dtos/user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -15,5 +15,11 @@ export class AuthController {
   @Get('users')
   async getUsers(): Promise<UserResponseDto[]> {
     return this.authService.getUsers();
+  }
+
+  @Post('login')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async login(@Body() loginDto: LoginDto): Promise<{ accessToken: string }> {
+    return this.authService.login(loginDto);
   }
 }

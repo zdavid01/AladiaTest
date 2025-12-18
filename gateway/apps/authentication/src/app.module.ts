@@ -1,11 +1,9 @@
-import { configModuleOptions } from '@app/config/index';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AppService } from 'apps/gateway/src/app.service';
-import { config } from 'process';
+import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from './users/users.module';
-import { UsersController } from './users/users.controller';
+import { configModuleOptions } from '@app/config/index';
 
 @Module({
   imports: [
@@ -15,11 +13,17 @@ import { UsersController } from './users/users.controller';
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('MONGO_URI'),
       }),
-      inject: [ConfigService]
+      inject: [ConfigService],
     }),
-    UsersModule
+    JwtModule.registerAsync({
+      global: true,
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+      secret: configService.get<string>('JWT_SECRET') || 'temporary_fallback_secret_for_testing_1234567890', signOptions: { expiresIn: '1h' },
+      }),
+      inject: [ConfigService],
+    }),
+    UsersModule,
   ],
-  controllers: [UsersController],
-  providers: [AppService],
 })
 export class AppModule {}

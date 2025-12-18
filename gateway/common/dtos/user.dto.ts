@@ -16,3 +16,11 @@ export class UserResponseDto {
   name: string;
   email: string;
 }
+
+export class LoginDto {
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  password: string;
+}
